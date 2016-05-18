@@ -1,0 +1,30 @@
+// Place all the styles related to the Images controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+.image-list-container {
+  position: relative;
+  float:left;
+  height:136px;
+  width: 136px;
+  margin: 2px 2px;
+  border: solid 1px black;
+}
+.image-list-img {
+  padding: 4px 4px;
+}
+.image-list-actions {
+  text-align: center;
+}
+.image-list-actions-container {
+  position: absolute;
+  bottom: 0px;
+  width: 128px;
+  margin: 0px 4px;
+}
+.btn-actions {
+  margin: 8px;
+}
+.forms {
+  width: 50%;
+  margin: auto;
+}
