@@ -20,3 +20,45 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 ru:
+  phone_book: "Телефонная книга"
+  phones_title: "Телефоны для контакта \"%{name}\""
+  new: "Добавить..."
+  delete_sure: 'Вы уверены что хотите удалить эту запись?'
+  search: 'Поиск'
+  rows:
+    avatar: 'Аватар'
+    name: 'Имя'
+    phones: 'Номера'
+    new_title: 'Новая запись...'
+    name_label: 'Имя'
+    context_label: 'Контекст (не обязательно)'
+    avatar_label: 'Аватар (не обязательно)'
+    phones_label: 'Список телефонов (один на строку)'
+    save: 'Сохранить'
+    all: 'Все'
+  phones:
+    number: 'Номер'
+    number_label: 'Номер'
+    actions: 'Действия'
+    new_title: 'Новый телефон...'
+    edit_title: 'Изменить телефон'
+    save: 'Сохранить'
+  menu:
+    logout: "Выйти"
+    login: "Войти"
+    signup: "Регистрация"
+    home: "На главную"
+  errors:
+    rows:
+      new_save: 'Ошибка при создании новой записи.'
+      update_save: 'Ошибка при обновлении записи.'
+    phones:
+      new_save: 'Ошибка при создании нового телефона.'
+      update_save: 'Ошибка при обновлении телефона.'
+  views:
+    pagination:
+      first: "&laquo;"
+      last: "&raquo;"
+      previous: "&lsaquo;"
+      next: "&rsaquo;"
+      truncate: "&hellip;"

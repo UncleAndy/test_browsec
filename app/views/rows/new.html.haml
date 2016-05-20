@@ -1,0 +1,22 @@
+%h2{:align => 'center'}
+  = I18n.t('rows.new_title')
+.form-container
+  = form_for [@row], :html => { :multipart => true, :role => 'form', :class => 'forms' } do |f|
+    .form-group
+      %label{ for: "name" }
+        = I18n.t('rows.name_label')
+      = f.text_field :name, class: 'form-control'
+    .form-group
+      %label{ for: "context" }
+        = I18n.t('rows.context_label')
+      = f.text_field :context, class: 'form-control'
+    .form-group
+      %label{ for: "avatar" }
+        = I18n.t('rows.avatar_label')
+      = f.file_field :avatar, :style => 'width: 30%;', class: 'form-control'
+    .form-group
+      %label{ for: "phones" }
+        = I18n.t('rows.phones_label')
+      = f.text_area :phones, class: 'form-control', :value => '', :rows => 5
+    %button.btn.btn-success{ type: 'submit' }
+      = I18n.t('rows.save')

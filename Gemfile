@@ -31,7 +31,8 @@ gem 'carrierwave'
 gem 'bootstrap-sass'
 gem 'autoprefixer-rails'
 
-gem 'Bootstrap-Image-Gallery-rails'
+gem 'kaminari'
+gem 'bootstrap-kaminari-views'
 
 group :test, :development do
   gem 'rspec-rails'

@@ -20,3 +20,45 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
+  phone_book: "Phone book"
+  phones_title: "Phones for record \"%{name}\""
+  new: "New.."
+  delete_sure: 'Are you sure for delete?'
+  search: 'Search'
+  rows:
+    avatar: 'Avatar'
+    name: 'Name'
+    phones: 'Phones'
+    new_title: 'New record...'
+    name_label: 'Name'
+    context_label: 'Context (optional)'
+    avatar_label: 'Avatar (optional)'
+    phones_label: 'Phones list (one on line)'
+    save: 'Save'
+    all: 'All'
+  phones:
+    number: 'Number'
+    number_label: 'Number'
+    actions: 'Actions'
+    new_title: 'New phone...'
+    edit_title: 'Change phone'
+    save: 'Save'
+  menu:
+    logout: "Logout"
+    login: "Login"
+    signup: "Sign Up"
+    home: "Home"
+  errors:
+    rows:
+      new_save: 'Can not create new record.'
+      update_save: 'Can not update record.'
+    phones:
+      new_save: 'Can not create new phone.'
+      update_save: 'Can not update phone.'
+  views:
+    pagination:
+      first: "&laquo; First"
+      last: "Last &raquo;"
+      previous: "&lsaquo; Prev"
+      next: "Next &rsaquo;"
+      truncate: "&hellip;"

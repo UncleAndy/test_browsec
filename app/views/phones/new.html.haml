@@ -1,0 +1,10 @@
+%h2{:align => 'center'}
+  = I18n.t('phones.new_title')
+.form-container
+  = form_for [@row, @phone], :html => {:role => 'form', :class => 'forms' } do |f|
+    .form-group
+      %label{ for: "number" }
+        = I18n.t('phones.number_label')
+      = f.text_field :number, class: 'form-control'
+    %button.btn.btn-success{ type: 'submit' }
+      = I18n.t('phones.save')

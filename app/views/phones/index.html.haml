@@ -1,0 +1,25 @@
+%h2
+  = I18n.t('phones_title') % {:name => @row.name}
+
+.btn-group.left
+  = link_to new_row_phone_path(@row) do
+    %button.btn.btn-primary.btn-actions
+      = I18n.t('new')
+%br
+%br
+%table.table.table-bordered.table-condensed.table-striped.phones-table
+  %tr
+    %th.avatar
+      = I18n.t('phones.number')
+  - if @phones.present?
+    - @phones.each do |phone|
+      %tr
+        %td.middle
+          .btn-group.left
+            %b
+              = phone.number
+          .btn-group.right
+            = link_to edit_row_phone_path(@row, phone.id), class: 'action_glyph' do
+              %span.glyphicon.glyphicon-edit
+            = link_to row_phone_path(@row, phone.id), :method => :delete, :data => {:confirm => I18n.t("delete_sure")}, class: 'action_glyph' do
+              %span.glyphicon.glyphicon-remove

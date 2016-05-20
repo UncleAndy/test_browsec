@@ -1,0 +1,75 @@
+%h2
+  = I18n.t('phone_book')
+
+.btn-group.left
+  = link_to new_row_path do
+    %button.btn.btn-primary.btn-actions
+      = I18n.t('new')
+
+.btn-group.right
+  - if @per_page == 5
+    - active_5 = 'active'
+  - if @per_page == 10
+    - active_10 = 'active'
+  - if @per_page == 25
+    - active_25 = 'active'
+  - if @per_page < 0
+    - active_all = 'active'
+  = link_to rows_path(:page => @page, :size => 5), :class => "btn btn-default #{active_5}" do
+    5
+  = link_to rows_path(:page => @page, :size => 10), :class => "btn btn-default #{active_10}" do
+    10
+  = link_to rows_path(:page => @page, :size => 25), :class => "btn btn-default #{active_25}" do
+    25
+  = link_to rows_path(:page => @page, :size => 'all'), :class => "btn btn-default #{active_all}" do
+    = I18n.t('rows.all')
+
+.form-container-search
+  = form_for rows_path, :html => {:role => 'search', :class => 'search-form form-horizontal', :method => 'GET', :id => 'search_form' } do |f|
+    .input-group.add-on
+      %input{:type => 'hidden', :name => 'size', :value => params[:size] }
+      %input{:type => 'text', :name => 'search', id: 'search_field', class: 'form-control', placeholder: I18n.t('search'), :value => params[:search] }
+      .input-group-btn
+        %button.btn.btn-default.search_reset{ type: "button" }
+          %i.glyphicon.glyphicon-remove
+        %button.btn.btn-default{ type: "submit" }
+          %i.glyphicon.glyphicon-search
+%br
+%table.table.table-bordered.table-condensed.table-striped
+  %tr
+    %th.avatar
+      = I18n.t('rows.avatar')
+    %th
+      = I18n.t('rows.name')
+    %th.half
+      = I18n.t('rows.phones')
+  - if @rows.present?
+    - @rows.each do |row|
+      %tr
+        %td
+          - if row.avatar.present?
+            %img{:alt => row.name, :src => row.avatar.url}
+        %td.middle
+          .btn-group
+            %b
+              = row.name
+            - if row.context.present?
+              %br
+              %small
+                %i
+                  = "(#{row.context})"
+          %br
+          .btn-group
+            = link_to edit_row_path(row.id, :page => @page, :size => params[:size]), class: 'action_glyph' do
+              %span.glyphicon.glyphicon-edit
+            = link_to row_path(row.id, :size => params[:size]), :method => :delete, :data => {:confirm => I18n.t("delete_sure")}, class: 'action_glyph' do
+              %span.glyphicon.glyphicon-remove
+        %td.middle
+          .btn-group
+            = row.phones.pluck(:number).join(', ')
+          %br
+          .btn-group
+            = link_to row_phones_path(row.id), class: 'action_glyph' do
+              %span.glyphicon.glyphicon-list
+- if @per_page > 0
+  = paginate @rows, :theme => 'twitter-bootstrap-3'

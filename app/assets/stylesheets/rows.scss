@@ -1,0 +1,44 @@
+// Place all the styles related to the Rows controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+.btn-group.left {
+  float: left;
+}
+.btn-group.right {
+  float: right;
+}
+.btn-group.middle {
+  vertical-align: middle;
+}
+.pagination {
+  float: right;
+}
+.form-container-search {
+  width: 30%;
+  margin: auto;
+}
+tr th.avatar {
+  width: 128px;
+}
+tr th.center {
+  text-align: center;
+}
+tr th.half {
+  width: 50%;
+}
+.table tr td.middle {
+  vertical-align: middle;
+}
+.table tr td.center {
+  text-align: center;
+}
+A.action_glyph {
+  text-decoration: none;
+}
+A:hover.action_glyph {
+  text-decoration: none;
+}
+.phones-table {
+  margin: 0 auto;
+  width: 30%;
+}
