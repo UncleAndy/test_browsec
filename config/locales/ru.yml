@@ -36,6 +36,10 @@ ru:
     phones_label: 'Список телефонов (один на строку)'
     save: 'Сохранить'
     all: 'Все'
+    import: 'Загрузка...'
+    import_title: 'Загрузка контактов'
+    export: 'Выгрузка'
+    phonesfile_label: 'Файл для загрузки'
   phones:
     number: 'Номер'
     number_label: 'Номер'

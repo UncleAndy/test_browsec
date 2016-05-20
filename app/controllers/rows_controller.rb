@@ -55,6 +55,17 @@ class RowsController < ApplicationController
     redirect_to rows_path(:size => params[:size])
   end
 
+  def export
+    send_data ::ExportService.export(current_user), :type => 'text/csv; charset=UTF-8;', :disposition => "attachment; filename=contacts.csv"
+  end
+
+  def import_form
+  end
+
+  def import
+
+  end
+
   private
 
   def set_row

@@ -71,5 +71,13 @@
           .btn-group
             = link_to row_phones_path(row.id), class: 'action_glyph' do
               %span.glyphicon.glyphicon-list
+.btn-group.left
+  = link_to export_rows_path, class: 'action_glyph' do
+    %button.btn.btn-primary.btn-actions
+      = I18n.t('rows.export')
+  = link_to import_form_rows_path, class: 'action_glyph' do
+    %button.btn.btn-primary.btn-actions
+      = I18n.t('rows.import')
+
 - if @per_page > 0
   = paginate @rows, :theme => 'twitter-bootstrap-3'

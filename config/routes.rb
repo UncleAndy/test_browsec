@@ -5,5 +5,10 @@ Rails.application.routes.draw do
 
   resources :rows do
     resources :phones
+    collection do
+      get :export
+      get :import_form
+      post :import
+    end
   end
 end

@@ -36,6 +36,10 @@ en:
     phones_label: 'Phones list (one on line)'
     save: 'Save'
     all: 'All'
+    import: 'Import...'
+    import_title: 'Import phone book'
+    export: 'Export'
+    phonesfile_label: 'File for import'
   phones:
     number: 'Number'
     number_label: 'Number'

@@ -1,0 +1,10 @@
+%h2
+  = I18n.t('rows.import_title')
+.form-container
+  = form_for import_form_rows_path, :html => { :multipart => true, :role => 'form', :class => 'forms' } do |f|
+    .form-group
+      %label{ for: "phonesfile" }
+        = I18n.t('rows.phonesfile_label')
+      = f.file_field :phonesfile, :style => 'width: 30%;', class: 'form-control'
+    %button.btn.btn-success{ type: 'submit' }
+      = I18n.t('rows.save')

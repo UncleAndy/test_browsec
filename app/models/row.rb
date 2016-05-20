@@ -13,4 +13,8 @@ class Row < ActiveRecord::Base
   def random_string
     @randomstring ||= SecureRandom.hex(10)
   end
+
+  def updated_at_ut
+    updated_at.to_time.to_i
+  end
 end
