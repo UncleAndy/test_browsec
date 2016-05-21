@@ -40,6 +40,7 @@ en:
     import_title: 'Import phone book'
     export: 'Export'
     phonesfile_label: 'File for import'
+    import_success: 'Import done.'
   phones:
     number: 'Number'
     number_label: 'Number'

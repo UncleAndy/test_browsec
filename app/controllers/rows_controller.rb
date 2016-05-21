@@ -3,7 +3,7 @@ class RowsController < ApplicationController
 
   before_filter :set_row, only: [:edit, :update, :destroy]
   before_filter :set_page, only: [:index, :edit, :update]
-  before_filter :set_per_page, only: [:index, :edit, :update, :destroy]
+  before_filter :set_per_page, only: [:index]
 
   def index
     rows = current_user.rows
@@ -43,16 +43,16 @@ class RowsController < ApplicationController
 
   def update
     if @row.update_attributes(new_row_params)
-      redirect_to rows_path(:page => params[:row][:page], :size => params[:row][:size])
+      redirect_to rows_path(:page => params[:row][:page])
     else
-      redirect_to edit_row_path(:page => params[:row][:page], :size => params[:row][:size]), :notice => I18n.t('errors.rows.update_save')
+      redirect_to edit_row_path(:page => params[:row][:page]), :notice => I18n.t('errors.rows.update_save')
     end
   end
 
   def destroy
     @row.remove_avatar!
     @row.delete
-    redirect_to rows_path(:size => params[:size])
+    redirect_to rows_path
   end
 
   def export
@@ -63,7 +63,9 @@ class RowsController < ApplicationController
   end
 
   def import
-
+    file = params[:contacts]
+    ::ExportService.import(file.read, current_user)
+    redirect_to rows_path, :notice => I18n.t('rows.import_success')
   end
 
   private
@@ -79,12 +81,17 @@ class RowsController < ApplicationController
   end
 
   def set_per_page
-    @per_page = 5
-    if params[:size].present?
-      if params[:size] == 'all'
+    params_size = if params[:size].present?
+      session[:page_size] = params[:size]
+    else
+      session[:page_size] || 5
+    end
+
+    if params_size.present?
+      if params_size == 'all'
         @per_page = -1
       else
-        @per_page = params[:size].to_i
+        @per_page = params_size.to_i
       end
     end
   end

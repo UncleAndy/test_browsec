@@ -1,10 +1,11 @@
 %h2
   = I18n.t('rows.import_title')
 .form-container
-  = form_for import_form_rows_path, :html => { :multipart => true, :role => 'form', :class => 'forms' } do |f|
+  %form.forms{:action => import_rows_path, :enctype => 'multipart/form-data', :role => 'form', :method => 'POST' }
+    %input{ :type => 'hidden', :name => request_forgery_protection_token.to_s, :value => form_authenticity_token }
     .form-group
-      %label{ for: "phonesfile" }
+      %label{ for: 'phonesfile' }
         = I18n.t('rows.phonesfile_label')
-      = f.file_field :phonesfile, :style => 'width: 30%;', class: 'form-control'
+      %input.form-control{:type => 'file', :name => 'contacts', :style => 'width: 30%;'}
     %button.btn.btn-success{ type: 'submit' }
       = I18n.t('rows.save')
