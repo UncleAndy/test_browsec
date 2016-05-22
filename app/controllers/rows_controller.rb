@@ -4,6 +4,7 @@ class RowsController < ApplicationController
   before_filter :set_row, only: [:edit, :update, :destroy]
   before_filter :set_page, only: [:index, :edit, :update]
   before_filter :set_per_page, only: [:index]
+  before_filter :check_right_owner, only: [:edit, :update, :destroy]
 
   def index
     rows = current_user.rows
@@ -27,10 +28,12 @@ class RowsController < ApplicationController
     @row = current_user.rows.new(new_row_params)
 
     if @row.save
-      params[:row][:phones].split("\n").each do |num|
-        num = num.chomp
-        phone = @row.phones.new({:number => num})
-        phone.save
+      if params[:row][:phones].present?
+        params[:row][:phones].split("\n").each do |num|
+          num = num.chomp
+          phone = @row.phones.new({:number => num})
+          phone.save
+        end
       end
       redirect_to rows_path
     else
@@ -92,6 +95,14 @@ class RowsController < ApplicationController
         @per_page = -1
       else
         @per_page = params_size.to_i
+      end
+    end
+  end
+
+  def check_right_owner
+    if @row.present?
+      if @row.user_id != current_user.id
+        redirect_to rows_path, :notice => I18n.t('errors.have_not_rights')
       end
     end
   end

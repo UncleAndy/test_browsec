@@ -3,6 +3,7 @@ class PhonesController < ApplicationController
 
   before_filter :set_row
   before_filter :set_phone, only: [:edit, :update, :destroy]
+  before_filter :check_right_owner
 
   def index
     @phones = @row.phones
@@ -48,6 +49,14 @@ class PhonesController < ApplicationController
   def set_phone
     @phone_id = params[:id].to_i
     @phone = Phone.find(@phone_id)
+  end
+
+  def check_right_owner
+    if @row.present?
+      if @row.user_id != current_user.id
+        redirect_to rows_path, :notice => I18n.t('errors.have_not_rights')
+      end
+    end
   end
 
   def phones_params

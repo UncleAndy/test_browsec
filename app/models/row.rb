@@ -3,7 +3,7 @@ class Row < ActiveRecord::Base
 
   mount_uploader :avatar, AvatarUploader
 
-  default_scope { order('created_at DESC') }
+  default_scope { order('created_at DESC, id DESC') }
   scope :search, lambda {|str| where('name LIKE ?', "%#{str}%")}
 
   belongs_to :user

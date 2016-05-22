@@ -3,7 +3,7 @@ class Phone < ActiveRecord::Base
 
   belongs_to :row
 
-  default_scope { order('created_at DESC') }
+  default_scope { order('created_at DESC, id DESC') }
 
   before_save :normalize
 

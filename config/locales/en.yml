@@ -54,6 +54,7 @@ en:
     signup: "Sign Up"
     home: "Home"
   errors:
+    have_not_rights: 'You have not rights for this action.'
     rows:
       new_save: 'Can not create new record.'
       update_save: 'Can not update record.'

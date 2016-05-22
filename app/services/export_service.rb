@@ -64,27 +64,30 @@ class ExportService
 
           Rails.logger.info("DBG: Sync phone #{phone[:number]}...")
 
+          db_phone = nil
           if row[:user_id] == current_user.id
             # Если юзер этот-же - сначала проверяем изменение по phone_id
             db_phone = db_row.phones.find_by_id(phone_id)
 
-            Rails.logger.info("DBG: Found number #{phone[:number]} by id")
+            Rails.logger.info("DBG: Found number #{phone[:number]} by id (#{phone_id})") if db_phone.present?
 
             # Изменяем номер телефона если он найден, значение другое и время изменения в базе раньше чем в CSV
             if db_phone.present? && db_phone.number != phone[:number] && db_phone.updated_at_ut < phone[:updated_at_ut]
               Rails.logger.info("DBG: Upate number #{phone[:number]}")
               db_phone.update(:number => phone[:number])
             end
-          else
-            # Если юзер другой - проверяем существует-ли такой номер и добавлем если его нет
+          end
+
+          if db_phone.blank?
+            # Если юзер другой или номера не существует - проверяем существует-ли такой номер и добавлем если его нет
             db_phone = db_row.phones.find_by_normalized(phone[:normalized])
 
             Rails.logger.info("DBG: Found number #{phone[:number]} by number") if db_phone.present?
 
             # Добавляем новый телефон если его нет в базе
             if db_phone.blank?
-              db_row.phones.create(:number => phone[:number])
               Rails.logger.info("DBG: Add number #{phone[:number]}")
+              db_row.phones.create(:number => phone[:number])
             end
           end
         end
@@ -131,6 +134,7 @@ class ExportService
             normalized: ::NumberService.normalize(line[3])
         }
 
+        new_rows[phone[:row_id]] = {} if new_rows[phone[:row_id]].blank?
         new_rows[phone[:row_id]][:phones] = {} if new_rows[phone[:row_id]][:phones].blank?
         new_rows[phone[:row_id]][:phones][phone[:id]] = phone
       end
