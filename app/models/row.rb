@@ -10,11 +10,19 @@ class Row < ActiveRecord::Base
 
   has_many :phones
 
+  before_destroy :destroy_phones
+
   def random_string
     @randomstring ||= SecureRandom.hex(10)
   end
 
   def updated_at_ut
     updated_at.to_time.to_i
+  end
+
+  private
+
+  def destroy_phones
+    Phone.where(:row_id => id).delete_all
   end
 end

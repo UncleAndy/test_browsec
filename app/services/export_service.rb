@@ -35,20 +35,26 @@ class ExportService
                  Row.find_by_id(row[:id])
                end
 
+      Rails.logger.info("DBG: Row founded by id") if db_row.present?
+
       if db_row.blank?
         # Если другой пользователь или такого контакта нет - ищем по нормализованному номеру телефона
         # До первого совпадения
+        Rails.logger.info("DBG: Find row by phone number")
         row[:phones].keys.each do |phone_id|
           phone = row[:phones][phone_id]
-          db_row = Phone.find_by_normalized(phone[:normalized])
+          db_phone = Phone.find_by_normalized(phone[:normalized])
+          db_row = db_phone.row if db_phone.present?
           break if db_row.present?
         end
+        Rails.logger.info("DBG: Row founded by phone number") if db_row.present?
       end
 
       if db_row.present?
         # Контакт найден - синхронизируем
         if db_row.updated_at_ut < row[:updated_at_ut]
           # Если данные контакта в базе более поздние - обновляем их
+          Rails.logger.info("DBG: Imported data news - update db row")
           db_row.update_columns(:name => row[:name], :context => row[:context])
         end
 
@@ -56,24 +62,35 @@ class ExportService
         row[:phones].keys.each do |phone_id|
           phone = row[:phones][phone_id]
 
+          Rails.logger.info("DBG: Sync phone #{phone[:number]}...")
+
           if row[:user_id] == current_user.id
             # Если юзер этот-же - сначала проверяем изменение по phone_id
             db_phone = db_row.phones.find_by_id(phone_id)
 
+            Rails.logger.info("DBG: Found number #{phone[:number]} by id")
+
             # Изменяем номер телефона если он найден, значение другое и время изменения в базе раньше чем в CSV
             if db_phone.present? && db_phone.number != phone[:number] && db_phone.updated_at_ut < phone[:updated_at_ut]
+              Rails.logger.info("DBG: Upate number #{phone[:number]}")
               db_phone.update(:number => phone[:number])
             end
           else
             # Если юзер другой - проверяем существует-ли такой номер и добавлем если его нет
             db_phone = db_row.phones.find_by_normalized(phone[:normalized])
 
+            Rails.logger.info("DBG: Found number #{phone[:number]} by number") if db_phone.present?
+
             # Добавляем новый телефон если его нет в базе
-            db_row.phones.create(:number => phone[:number]) if db_phone.blank?
+            if db_phone.blank?
+              db_row.phones.create(:number => phone[:number])
+              Rails.logger.info("DBG: Add number #{phone[:number]}")
+            end
           end
         end
       else
         # Контакт не найден - создаем новый
+        Rails.logger.info("DBG: Add new row")
         db_row = current_user.rows.create(:name => row[:name], :context => row[:context])
 
         # Если по какой-то причине контакт не создался - игнорируем
@@ -81,6 +98,7 @@ class ExportService
           # Добавляем телефоны в новый контакт
           row[:phones].keys.each do |phone_id|
             phone = row[:phones][phone_id]
+            Rails.logger.info("DBG: Add new number #{phone[:number]}")
             db_row.phones.create(:number => phone[:number])
           end
         end
@@ -93,13 +111,12 @@ class ExportService
   def self.parse_csv(csv)
     # Контакты из импортируемого файла
     new_rows = {}
-    # Индекс - телефоны по номеру (только цифры без +7 или 8)
-#    phones_numbers = {}
 
     CSV.parse(csv, :headers => false, :col_sep => ',', :quote_char => '"') do |line|
       if line[0] == 'row'
         # Используется поатрибутное присвоение для случая если телефоны идут раньше контакта
         id = line[1].to_i
+        new_rows[id] = {} if new_rows[id].blank?
         new_rows[id][:id] = id
         new_rows[id][:user_id] = line[2].to_i
         new_rows[id][:name] = line[3]
@@ -116,8 +133,6 @@ class ExportService
 
         new_rows[phone[:row_id]][:phones] = {} if new_rows[phone[:row_id]][:phones].blank?
         new_rows[phone[:row_id]][:phones][phone[:id]] = phone
-
-#        phones_numbers[phone[:number_normalized].to_i] = phone
       end
     end
 

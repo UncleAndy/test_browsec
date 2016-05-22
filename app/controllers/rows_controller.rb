@@ -51,7 +51,7 @@ class RowsController < ApplicationController
 
   def destroy
     @row.remove_avatar!
-    @row.delete
+    @row.destroy
     redirect_to rows_path
   end
 
