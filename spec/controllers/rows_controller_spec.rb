@@ -10,7 +10,7 @@ RSpec.describe RowsController, type: :controller do
     @user_bad = FactoryGirl.create(:user)
 
     file = fixture_file_upload('/test.jpg', 'image/jpeg')
-    @row = FactoryGirl.create(:row, :user_id => @user.id, :avatar => file)
+    @row = FactoryGirl.create(:row, :user_id => @user.id, :avatar => file, :name => 'Test contact')
     @phone = FactoryGirl.create(:phone, :row_id => @row.id)
     @phone2 = FactoryGirl.create(:phone, :row_id => @row.id)
   end
@@ -108,8 +108,15 @@ RSpec.describe RowsController, type: :controller do
       end
 
       describe 'поиск' do
-        pending 'должен возвращать страницу'
-        pending 'должен возвращать на странице верные записи'
+        it 'должен возвращать страницу' do
+          get :index, :search => 'contact'
+          expect(response).to be_success
+        end
+
+        it 'должен возвращать на странице верные записи' do
+          get :index, :search => 'contact'
+          expect(response.body).to include('Test contact')
+        end
       end
 
       describe 'вывод всех записей на странице' do
@@ -181,15 +188,37 @@ RSpec.describe RowsController, type: :controller do
     end
 
     describe '#export' do
-      pending 'должен возвращать файл с правильными данными'
+      it 'должен возвращать файл' do
+        get :export
+        expect(response).to be_success
+      end
+
+      it 'должен возвращать файл с правильными данными' do
+        get :export
+        expect(response.body).to eq(
+"row,#{@row.id},#{@user.id},\"#{@row.name}\",\"#{@row.context}\",#{@row.updated_at_ut}
+phone,#{@phone2.id},#{@row.id},\"#{@phone2.number}\",#{@phone.updated_at_ut}
+phone,#{@phone.id},#{@row.id},\"#{@phone.number}\",#{@phone.updated_at_ut}
+")
+      end
     end
 
     describe '#import_form' do
-      pending 'должен возвращать страницу'
+      it 'должен возвращать страницу' do
+        get :import_form
+        expect(response).to be_success
+      end
     end
 
     describe '#import' do
-      pending 'должен изменять и добавлять данные в соответствии с CSV файлом'
+      before(:each) do
+        @csv = fixture_file_upload('/test.csv', 'text/plain')
+      end
+
+      it 'должен делать перенаправление на список контактов' do
+        post :import, :contacts => @csv
+        expect(response).to redirect_to(rows_path)
+      end
     end
   end
 end
