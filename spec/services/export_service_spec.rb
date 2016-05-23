@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe ExportService do
   before(:each) do
     @user = FactoryGirl.create(:user)
+    @user2 = FactoryGirl.create(:user)
 
     @row = FactoryGirl.create(:row, :user_id => @user.id, :name => 'Name', :context => 'Context')
     @phone = FactoryGirl.create(:phone, :row_id => @row.id, :number => '+70000000001')
@@ -118,6 +119,62 @@ phone,#{@phone2.id+200},#{@row.id+100},\"2\",#{DateTime.now.to_i + 1000}
             expect(@row.name).to eq('New CSV row name')
             expect(@row.context).to eq('New CSV context')
           end
+        end
+      end
+    end
+
+    context 'данные другого пользователя' do
+      context 'изменение и добавление кантакта, добавление и изменение телефона' do
+        context 'при совпадении контакта по id' do
+          before(:each) do
+            @csv = "row,#{@row.id},#{@user2.id},\"New CSV row name\",\"New CSV context\",#{DateTime.now.to_i + 1000}
+phone,#{@phone.id},#{@row.id},\"1\",#{DateTime.now.to_i + 1000}
+phone,#{@phone2.id+100},#{@row.id},\"2\",#{DateTime.now.to_i + 1000}
+row,#{@row.id+1},#{@user2.id},\"New CSV row name 2\",\"New CSV context 2\",#{DateTime.now.to_i + 1000}
+phone,#{@phone2.id+200},#{@row.id+1},\"11\",#{DateTime.now.to_i + 1000}
+            "
+          end
+
+          it 'должен добавить 2 контакта' do
+            expect {
+              ::ExportService.import(@csv, @user)
+            }.to change(Row, :count).by(2)
+          end
+
+          it 'должен добавить 3 телефона' do
+            expect {
+              ::ExportService.import(@csv, @user)
+            }.to change(Phone, :count).by(3)
+          end
+        end
+
+        context 'Идентификация контакта по номеру телефона (id не совпадают)' do
+          before(:each) do
+            @csv = "row,#{@row.id+100},#{@user2.id},\"New CSV row name\",\"New CSV context\",#{DateTime.now.to_i + 1000}
+phone,#{@phone.id+100},#{@row.id+100},\"#{@phone.number}\",#{DateTime.now.to_i + 1000}
+phone,#{@phone2.id+200},#{@row.id+100},\"2\",#{DateTime.now.to_i + 1000}
+            "
+          end
+
+          it 'не должен добавлять новые контакты' do
+            expect {
+              ::ExportService.import(@csv, @user)
+            }.to change(Row, :count).by(0)
+          end
+
+          it 'должен добавить 1 телефон' do
+            expect {
+              ::ExportService.import(@csv, @user)
+            }.to change(Phone, :count).by(1)
+          end
+
+          it 'должен изменить данные существующего контакта' do
+            ::ExportService.import(@csv, @user)
+            @row.reload
+            expect(@row.name).to eq('New CSV row name')
+            expect(@row.context).to eq('New CSV context')
+          end
+
         end
       end
     end
